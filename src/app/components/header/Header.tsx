@@ -116,8 +116,13 @@ function ResponsiveAppBar() {
           <Box sx={{ flexGrow: 0 }}>
             {loading ? null : !user ? (
                 <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                    <Button onClick={handleSignIn} color="inherit">Login</Button>
-                    <Button onClick={handleSignIn} color="inherit">Sign up</Button>
+                   <Link href={`/login`} passHref>
+                      <Button color="inherit">Login</Button>
+                   </Link>
+                   
+                   <Link href={`/register`} passHref>
+                      <Button color="inherit">Sign up</Button>
+                    </Link>
                 </Box>
             ) : (
                 <div>

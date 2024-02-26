@@ -1,38 +1,40 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { UserAuth } from "../context/AuthContext";
-import Spinner from "../components/Spinner";
+"use client"
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+// import { auth, db } from '@/config/firebase'; 
+import { auth, db } from "@/config/firebase";
+import { 
+  collection, 
+  getDocs,
+  doc,
+  onSnapshot
+} from "firebase/firestore";
 
-const Page = () => {
-  const { user } = UserAuth();
-  const [loading, setLoading] = useState(true);
+export default function ProfilePage() {
+  const router = useRouter();
+  const [user, setUser] = useState(null);
+  const collectionRef = collection(db, 'users');
+  const getData = () => {
+    onSnapshot(collectionRef, (data) => {
+      console.log(
+        data.docs.map((item) => {
+          return item.data();
+        })
+      )
+    })
+  };
 
-  useEffect(() => {
-    const checkAuthentication = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      setLoading(false);
-    };
-    checkAuthentication();
-  }, [user]);
+  if (!user) {
+    return <p>Loading...</p>;
+  }
 
   return (
-    <div className="p-4">
-      {loading ? (
-        <Spinner />
-      ) : (
-        <React.Fragment>
-          {user ? (
-            <p>
-              Welcome, {user.displayName} - you are logged in to the profile page -
-              a protected route.
-            </p>
-          ) : (
-            <p>You must be logged in to view this page - protected route.</p>
-          )}
-        </React.Fragment>
-      )}
+    <div>
+      <h1>Profile</h1>
+      <img src={user.avatar} alt="Avatar" />
+      <p>Email: {user.email}</p>
+      <p>First Name: {user.firstName}</p>
+      <p>Last Name: {user.lastName}</p>
     </div>
   );
-};
-
-export default Page;
+}
